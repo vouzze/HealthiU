@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8">
     <title>Insert title here</title>
@@ -8,10 +9,12 @@
     <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
     <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
-    <script th:src="@{/js/script.js}"></script>
+    <!--    <script th:src="@{/js/script.js}"></script>-->
 </head>
 <body>
 <h1>Simple chat</h1>
+<ul class="chat_rooms" th:if="${role == 'ADMIN'}">
+</ul>
 <div class="chat_window">
     <div class="top_menu">
         <div class="buttons">
@@ -24,11 +27,10 @@
     <ul class="messages"></ul>
     <div class="bottom_wrapper clearfix">
         <div class="message_input_wrapper">
-            <input id="message_input_value" class="message_input" placeholder="Type your message here..." />
+            <input id="message_input_value" class="message_input" placeholder="Type your message here..."/>
         </div>
         <div class="send_message">
             <div class="icon"></div>
-
         </div>
 
         <button onclick="connect()">Connect to chat</button>
@@ -37,10 +39,102 @@
     </div>
 </div>
 <div id="message_template" class="message_template">
-    <li class="message"><div class="avatar"></div>
+    <li class="message">
+        <div class="avatar"></div>
         <div class="text_wrapper">
             <div class="text"></div>
-        </div></li>
+        </div>
+    </li>
 </div>
+<div id="chat_room_template" class="chat_room_template">
+    <li class="chat_room">
+        <a class="login" >Login</a>
+    </li>
+</div>
+
+<script th:inline="javascript">
+    var userLogin = "hamham";
+    $('.chat_rooms').empty();
+    let chatRoomList = [[${chatRoomList}]];
+    if (chatRoomList !== null) {
+        for (let i = 0; i < chatRoomList.length; i++) {
+            if (i === 0) {
+                userLogin = chatRoomList[i];
+            }
+            drawLogin(chatRoomList[i]);
+        }
+    }
+
+    function connect() {
+        let socket = new SockJS('/chat-messaging');
+        stompClient = Stomp.over(socket);
+        $('.messages').empty();
+        let messageList = [[${messageList}]];
+        for (let i = 0; i < messageList.length; i++) {
+            let data = JSON.parse(messageList[i]);
+            if ((data.senderLogin === [[${senderLogin}]] && data.recipientLogin === [[${recipientLogin}]])
+                || (data.senderLogin === [[${recipientLogin}]] && data.recipientLogin === [[${senderLogin}]])) {
+                if (data.senderLogin === [[${#httpServletRequest.remoteUser}]]) {
+                    draw("right", data.content);
+                } else {
+                    draw("left", data.content);
+                }
+            }
+        }
+        stompClient.connect({}, function (frame) {
+            console.log("connected: " + frame);
+            stompClient.subscribe('/chat/messages', function (response) {
+                var data = JSON.parse(response.body);
+                if ((data.senderLogin === [[${senderLogin}]] && data.recipientLogin === [[${recipientLogin}]])
+                    ||
+                    (data.senderLogin === [[${recipientLogin}]] && data.recipientLogin === [[${senderLogin}]])) {
+                    if (data.senderLogin === [[${#httpServletRequest.remoteUser}]]) {
+                        draw("right", data.content);
+                    } else {
+                        draw("left", data.content);
+                    }
+                }
+            });
+        });
+    }
+
+    function draw(side, text) {
+        console.log("drawing...");
+        var $message;
+        $message = $($('.message_template').clone().html());
+        $message.addClass(side).find('.text').html(text);
+        $('.messages').append($message);
+
+        return setTimeout(function () {
+            return $message.addClass('appeared');
+        }, 0);
+
+    }
+
+    function drawLogin(login) {
+        var $chat_room;
+        $chat_room = $($('.chat_room_template').clone().html());
+        $chat_room.addClass('chat_room_style').find('.login').html(login);
+        // document.getElementsByClassName('login')[0].href = "?" + login
+        $chat_room.find('.login').attr('href', 'chatroom/user-' + login);
+        console.log(login);
+        $('.chat_rooms').append($chat_room);
+    }
+
+    function disconnect() {
+        stompClient.disconnect();
+    }
+
+    function sendMessage() {
+        const senderLogin = [[${#httpServletRequest.remoteUser}]];
+        const recipientLogin = [[${recipientLogin}]];
+
+        stompClient.send("/app/message", {}, JSON.stringify({
+            'content': $("#message_input_value").val(),
+            'senderLogin': senderLogin,
+            'recipientLogin': recipientLogin
+        }));
+    }
+</script>
 </body>
 </html>

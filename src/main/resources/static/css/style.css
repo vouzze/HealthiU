@@ -193,3 +193,11 @@ body {
 .message_template {
     display: none;
 }
+
+.chat_room_template {
+    display: none;
+}
+
+.chat_room_style {
+    color: #45829b;
+}
