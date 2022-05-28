@@ -3,7 +3,7 @@ package com.example.healthiu.controller;
 import com.example.healthiu.entity.Message;
 import com.example.healthiu.entity.MessageData;
 import com.example.healthiu.entity.Role;
-import com.example.healthiu.repository.MessageRepository;
+import com.example.healthiu.service.ChatRoomRequestService;
 import com.example.healthiu.service.ChatRoomService;
 import com.example.healthiu.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,12 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.Past;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,45 +29,138 @@ public class ChatController {
     @Autowired
     private ChatRoomService chatRoomService;
 
-    @GetMapping("/")
-    public String getChat(Model model, HttpServletRequest req, Authentication authentication) throws JsonProcessingException {
-        String role = authentication.getAuthorities().toString();
-        role = role.replace("[", "");
-        role = role.replace("]", "");
-        List<String> chatRoomList = new ArrayList<>();
+    @Autowired
+    private ChatRoomRequestService chatRoomRequestService;
 
+    private List<String> chatRoomList = new ArrayList<>();
+
+    @GetMapping("/chatroom")
+    public String getChat(Model model, HttpServletRequest req, Authentication authentication) throws JsonProcessingException {
+        String role = getRole(authentication);
         String senderLogin = req.getRemoteUser();
-//        String recipientLogin = chatRoomService.findRecipientLoginForChatInit(senderLogin);
-        String recipientLogin = "admin";
-        if (role.equals(Role.USER.getRole())) {
-            recipientLogin = chatRoomService.findRecipientLoginForChatInit(senderLogin);
-        }
+        String recipientLogin = "doctor";
 
         if (role.equals(Role.ADMIN.getRole())) {
-            chatRoomList = chatRoomService.findAllChatRoomsByDoctorLoginJson(senderLogin);
+            return "redirect:/chatroom/admin";
         }
 
-        model.addAttribute("role", role);
-        model.addAttribute("senderLogin", senderLogin);
-        model.addAttribute("recipientLogin", recipientLogin);
-        model.addAttribute("messageList",
-                messageService.findAllMessagesBySenderLoginAndRecipientLogin(senderLogin, recipientLogin));
-        model.addAttribute("chatRoomList", chatRoomList);
+        if (role.equals(Role.USER.getRole())) {
+            if (chatRoomService.checkIfChatRoomExists(senderLogin)) {
+                recipientLogin = chatRoomService.findRecipientLoginForChatInit(senderLogin);
+            } else {
+                return "redirect:/chatroom/request-chatroom";
+            }
+        }
 
+        if (role.equals(Role.DOCTOR.getRole())) {
+            chatRoomList = chatRoomService.findAllChatRoomsByDoctorLoginJson(senderLogin);
+            model.addAttribute("requested_doctor",
+                    chatRoomRequestService.checkIfDoctorChatRoomRequestExists(senderLogin));
 
-        return "index";
+        }
+
+        addAttributes(model, role, senderLogin, recipientLogin, chatRoomList);
+
+        return "chatroom";
     }
 
     @GetMapping("/chatroom/user-{login}")
     public String getChatRoom(@PathVariable("login") String recipientLogin, Model model, HttpServletRequest req,
                               Authentication authentication) throws JsonProcessingException {
-
+        String role = getRole(authentication);
         String senderLogin = req.getRemoteUser();
-        model.addAttribute("senderLogin", senderLogin);
-        model.addAttribute("recipientLogin", recipientLogin);
-        model.addAttribute("messageList",
-                messageService.findAllMessagesBySenderLoginAndRecipientLogin(senderLogin, recipientLogin));
-        return "index";
+        if (role.equals(Role.ADMIN.getRole())) {
+            return "redirect:/chatroom/admin";
+        }
+        if (role.equals(Role.USER.getRole())) {
+            if (chatRoomService.checkIfChatRoomExists(senderLogin)) {
+                if (!chatRoomService.findRecipientLoginForChatInit(senderLogin).equals(recipientLogin)) {
+                    return "redirect:/chatroom";
+                }
+            } else {
+                return "redirect:/chatroom/request-chatroom";
+            }
+        }
+        if (role.equals(Role.DOCTOR.getRole())) {
+            if (!chatRoomService.findAllChatRoomsByDoctorLoginJson(senderLogin).contains(recipientLogin)) {
+                return "redirect:/chatroom";
+            } else {
+                chatRoomList = chatRoomService.findAllChatRoomsByDoctorLoginJson(senderLogin);
+            }
+            model.addAttribute("requested_doctor",
+                    chatRoomRequestService.checkIfDoctorChatRoomRequestExists(senderLogin));
+        }
+        addAttributes(model, role, senderLogin, recipientLogin, chatRoomList);
+        return "chatroom";
+    }
+
+    @GetMapping("/chatroom/request-chatroom")
+    public String getRequestChatroom(Model model, HttpServletRequest req) {
+        String userLogin = req.getRemoteUser();
+        if (chatRoomService.checkIfChatRoomExists(userLogin)) {
+            return "redirect:/chatroom";
+        }
+        model.addAttribute("requested", chatRoomRequestService.checkIfUserChatRoomRequestExists(userLogin));
+        return "request_chatroom";
+    }
+
+    @GetMapping("/chatroom/request-chatroom/requested")
+    public String requestChatroom(Model model, HttpServletRequest req) {
+        String userLogin = req.getRemoteUser();
+        if (chatRoomService.checkIfChatRoomExists(userLogin)) {
+            return "redirect:/chatroom";
+        }
+        if (!chatRoomRequestService.checkIfUserChatRoomRequestExists(userLogin)) {
+            chatRoomRequestService.addNewUserChatRoomRequest(userLogin);
+            model.addAttribute("requested", chatRoomRequestService.checkIfUserChatRoomRequestExists(userLogin));
+        }
+        return "redirect:/chatroom/request-chatroom";
+    }
+
+    @GetMapping("/chatroom/request-chatroom-doctor")
+    public String requestChatroomDoctor(Model model, HttpServletRequest req) {
+        String doctorLogin = req.getRemoteUser();
+        if (!chatRoomRequestService.checkIfDoctorChatRoomRequestExists(doctorLogin)) {
+            chatRoomRequestService.addNewDoctorChatRoomRequest(doctorLogin);
+            model.addAttribute("requested_doctor",
+                    chatRoomRequestService.checkIfDoctorChatRoomRequestExists(doctorLogin));
+        }
+        return "redirect:/chatroom";
+    }
+
+    @GetMapping("/chatroom/unrequest-chatroom-doctor")
+    public String unrequestChatroomDoctor(Model model, HttpServletRequest req) {
+        String doctorLogin = req.getRemoteUser();
+        if (chatRoomRequestService.checkIfDoctorChatRoomRequestExists(doctorLogin)) {
+            chatRoomRequestService.removeDoctorChatRoomRequest(doctorLogin);
+            model.addAttribute("requested_doctor",
+                    chatRoomRequestService.checkIfDoctorChatRoomRequestExists(doctorLogin));
+        }
+        return "redirect:/chatroom";
+    }
+
+    @GetMapping("/chatroom/admin")
+    public String getChatRoomAdmin(Model model) {
+        model.addAttribute("userRequestList", chatRoomRequestService.findAllUserLogins());
+        model.addAttribute("doctorRequestList", chatRoomRequestService.findAllDoctorLogins());
+        System.out.println(model);
+        return "admin_chatroom";
+    }
+
+    @GetMapping("/chatroom/admin/add-chatroom/{userLogin}/{doctorLogin}")
+    public String addChatRoom(@PathVariable String userLogin, @PathVariable String doctorLogin,
+                               Model model) throws Exception {
+        boolean isChatRoomInvalid = false;
+        if (chatRoomRequestService.findAllUserLogins().contains(userLogin)
+                && chatRoomRequestService.findAllDoctorLogins().contains(doctorLogin)) {
+            chatRoomService.addNewChatRoom(userLogin, doctorLogin);
+            chatRoomRequestService.removeUserChatRoomRequest(userLogin);
+        } else {
+            throw new Exception("ChatRoom is invalid");
+//            model.addAttribute("isChatRoomInvalid", true);
+        }
+        System.out.println(model.toString());
+        return "admin_chatroom";
     }
 
     @MessageMapping("/message")
@@ -79,6 +169,23 @@ public class ChatController {
         return messageService.addNewMessage(
                 messageData.getSenderLogin(), messageData.getRecipientLogin(), messageData.getContent()
         );
+    }
+
+    private String getRole(Authentication authentication) {
+        String role = authentication.getAuthorities().toString();
+        role = role.replace("[", "");
+        role = role.replace("]", "");
+        return role;
+    }
+
+    private void addAttributes(Model model, String role, String senderLogin, String recipientLogin, List<String> chatRoomList)
+            throws JsonProcessingException {
+        model.addAttribute("role", role);
+        model.addAttribute("senderLogin", senderLogin);
+        model.addAttribute("recipientLogin", recipientLogin);
+        model.addAttribute("messageList",
+                messageService.findAllMessagesBySenderLoginAndRecipientLogin(senderLogin, recipientLogin));
+        model.addAttribute("chatRoomList", chatRoomList);
     }
 
 }

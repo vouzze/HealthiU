@@ -11,7 +11,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class ChatRoom {
     @Id
-    @GeneratedValue
     private Long id;
 
     @Column
@@ -19,4 +18,9 @@ public class ChatRoom {
 
     @Column
     private String doctorLogin;
+
+    public ChatRoom(String userLogin, String doctorLogin) {
+        this.userLogin = userLogin;
+        this.doctorLogin = doctorLogin;
+    }
 }

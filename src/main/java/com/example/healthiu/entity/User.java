@@ -13,7 +13,6 @@ import java.time.LocalDate;
 public class User {
 
     @Id
-    @GeneratedValue
     private Long id;
 
     @Column(unique = true)
@@ -27,7 +26,7 @@ public class User {
     private String password;
 
     @Column
-    private LocalDate date_of_birth;
+    private LocalDate dateOfBirth;
 
     @Column
     private String role;
@@ -37,12 +36,12 @@ public class User {
         this.password = password;
     }
 
-    public User(String login, String name, String email, String password, LocalDate date_of_birth, String role) {
+    public User(String login, String name, String email, String password, LocalDate dateOfBirth, String role) {
         this.login = login;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.date_of_birth = date_of_birth;
+        this.dateOfBirth = dateOfBirth;
         this.role = role;
     }
 }

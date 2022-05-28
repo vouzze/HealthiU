@@ -1,5 +1,6 @@
 package com.example.healthiu.config;
 
+import com.example.healthiu.entity.Role;
 import com.example.healthiu.security.MyAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,11 +33,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/home", "/register",
+                .antMatchers("/home", "/register",
                         "/chat-messaging/**",
                         "/css/**", "/js/**", "/webjars/**"
                 )
                 .permitAll()
+                .antMatchers("/chatroom/admin", "/chatroom/admin/add-chatroom/**").hasAuthority(Role.ADMIN.getRole())
+                .antMatchers("/chatroom/request-chatroom-doctor", "/chatroom/unrequest-chatroom-doctor")
+                .hasAuthority(Role.DOCTOR.getRole())
+                .antMatchers("/chatroom/request-chatroom", "/chatroom/request-chatroom/requested")
+                .hasAuthority(Role.USER.getRole())
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

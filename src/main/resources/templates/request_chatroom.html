@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+    <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+    <!--    <script th:src="@{/js/script.js}"></script>-->
+</head>
+<body>
+<h1>Simple chat</h1>
+
+<div th:if="${!requested}" class="chat_window">
+    <button onclick="requestChatRoom()">Request a chat room</button>
+</div>
+
+<div th:if="${requested}" class="chat_window">
+    <h1>Chat room requested</h1>
+</div>
+
+<script th:inline="javascript">
+    function requestChatRoom() {
+        $.ajax({
+            type: "GET",
+            url: "/chatroom/request-chatroom/requested",
+            success: function (response) {
+                window.location.reload();
+            }
+        });
+    }
+</script>
+</body>
+</html>

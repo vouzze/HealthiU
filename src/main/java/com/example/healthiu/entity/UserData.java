@@ -5,7 +5,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
 @FieldMatch(first = "password", second = "confirm_password", message = "The password fields must match")
 public class UserData implements Serializable {
@@ -26,12 +25,12 @@ public class UserData implements Serializable {
     @Size(min = 6, max = 10, message = "Password can be of length from 6 to 10")
     private String password;
 
-    private String confirm_password;
+    private String confirmPassword;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Date can't be null")
     @Past(message = "Invalid date")
-    private LocalDate date_of_birth;
+    private LocalDate dateOfBirth;
 
     public String getLogin() {
         return login;
@@ -65,20 +64,20 @@ public class UserData implements Serializable {
         this.password = password;
     }
 
-    public String getConfirm_password() {
-        return confirm_password;
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 
-    public void setConfirm_password(String confirm_password) {
-        this.confirm_password = confirm_password;
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
-    public LocalDate getDate_of_birth() {
-        return date_of_birth;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDate_of_birth(LocalDate date_of_birth) {
-        this.date_of_birth = date_of_birth;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public UserData() {
@@ -89,12 +88,12 @@ public class UserData implements Serializable {
         this.password = password;
     }
 
-    public UserData(String login, String name, String email, String password, String confirm_password, LocalDate date_of_birth) {
+    public UserData(String login, String name, String email, String password, String confirmPassword, LocalDate dateOfBirth) {
         this.login = login;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.confirm_password = confirm_password;
-        this.date_of_birth = date_of_birth;
+        this.confirmPassword = confirmPassword;
+        this.dateOfBirth = dateOfBirth;
     }
 }

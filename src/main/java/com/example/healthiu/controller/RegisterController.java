@@ -31,7 +31,6 @@ public class RegisterController {
             return "register";
         }
         if (userService.checkIfUserExist(userData.getLogin()) || userService.checkIfEmailExist(userData.getEmail())) {
-            System.out.println("user exists");
             model.addAttribute("user_exists", "User already exists");
             return "register";
         }

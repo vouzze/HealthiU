@@ -11,7 +11,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/home").setViewName("home");
-        registry.addViewController("/").setViewName("index");
+        registry.addViewController("/").setViewName("chatroom");
+        registry.addViewController("/chatroom").setViewName("chatroom");
+        registry.addViewController("/chatroom/admin").setViewName("admin_chatroom");
+        registry.addViewController("/chatroom/request-chatroom").setViewName("request_chatroom");
+        registry.addViewController("/chatroom/user-**").setViewName("index");
         registry.addViewController("/hello").setViewName("hello");
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/register").setViewName("register");

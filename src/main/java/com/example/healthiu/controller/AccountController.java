@@ -17,28 +17,28 @@ public class AccountController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @GetMapping("/hello")
-    public String getHello(Model model, HttpServletRequest req, Authentication authentication) {
-        User user = userRepository.findUserByLogin(req.getRemoteUser());
-        model.addAttribute("login", req.getRemoteUser());
-        model.addAttribute("name",user.getName() );
-        model.addAttribute("email", user.getEmail());
-        model.addAttribute("password", user.getPassword());
-        model.addAttribute("date_of_birth", user.getDate_of_birth());
-        model.addAttribute("role", authentication.getAuthorities().toString());
+    public String getHello(Model model, HttpServletRequest req) {
+        addAttributes(model, userService.findUserByLogin(req.getRemoteUser()));
         return "hello";
     }
 
-    @PostMapping("/hello")
-    public void getUserInfo(Model model, HttpServletRequest req) {
-        User user = userRepository.findUserByLogin(req.getRemoteUser());
+    private void addAttributes(Model model, User user) {
+        model.addAttribute("login", user.getLogin());
         model.addAttribute("name",user.getName() );
         model.addAttribute("email", user.getEmail());
         model.addAttribute("password", user.getPassword());
-        model.addAttribute("date_of_birth", user.getDate_of_birth());
-
+        model.addAttribute("date_of_birth", user.getDateOfBirth());
+        model.addAttribute("role", user.getRole());
     }
+
+//    @PostMapping("/hello")
+//    public void getUserInfo(Model model, HttpServletRequest req) {
+//        User user = userRepository.findUserByLogin(req.getRemoteUser());
+//        model.addAttribute("name",user.getName() );
+//        model.addAttribute("email", user.getEmail());
+//        model.addAttribute("password", user.getPassword());
+//        model.addAttribute("date_of_birth", user.getDateOfBirth());
+//
+//    }
 }

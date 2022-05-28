@@ -19,11 +19,11 @@
     <div><label> Password: <input type="password" th:field="*{password}" name="password"/> </label>
                 <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
     </div>
-    <div><label> Confirm Password: <input type="password" th:field="*{confirm_password}" name="confirm_password"/> </label>
-        <div th:if="${#fields.hasErrors('confirm_password')}" th:errors="*{confirm_password}"></div>
+    <div><label> Confirm Password: <input type="password" th:field="*{confirmPassword}" name="confirm_password"/> </label>
+        <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
     </div>
-    <div><label> Date of birth: <input type="date" th:field="*{date_of_birth}" name="date_of_birth"/> </label>
-                <div th:if="${#fields.hasErrors('date_of_birth')}" th:errors="*{date_of_birth}"></div>
+    <div><label> Date of birth: <input type="date" th:field="*{dateOfBirth}" name="date_of_birth"/> </label>
+                <div th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
     </div>
     <div><input type="submit" value="Sign Up"/></div>
     <input type="button" onclick="location.href='/send'" name="action" value="send" />

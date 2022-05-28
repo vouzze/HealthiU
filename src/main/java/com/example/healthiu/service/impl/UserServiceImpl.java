@@ -13,7 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,23 +28,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
     @Override
     public void register(UserData user) {
-        User userEntity = new User();
-        BeanUtils.copyProperties(user, userEntity);
-        userEntity.setRole(Role.USER.getRole());
-        userRepository.save(userEntity);
+        registerUserTemplate(user, Role.USER.getRole());
     }
 
     @Override
     public void register(UserData user, String role) {
-        User userEntity = new User();
-        BeanUtils.copyProperties(user, userEntity);
-        userEntity.setRole(role);
-        userRepository.save(userEntity);
+        registerUserTemplate(user, role);
     }
 
     @Override
@@ -60,23 +50,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void loginNewUser(UserData userData, HttpServletRequest req) {
+        loginUserTemplate(userData, req, Role.USER.getRole());
+    }
+
+    @Override
+    public void loginNewUser(UserData userData, HttpServletRequest req, String role) {
+        loginUserTemplate(userData, req, role);
+    }
+
+    @Override
+    public User findUserByLogin(String login) {
+        return userRepository.findUserByLogin(login);
+    }
+
+
+
+
+    //TEMPORARY TEMPLATES
+
+    private void loginUserTemplate(UserData userData, HttpServletRequest req, String role) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(Role.USER.getRole()));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userData.getLogin(), userData.getPassword(), authorities);
+        authorities.add(new SimpleGrantedAuthority(role));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userData.getLogin(), userData.getPassword(), authorities
+        );
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(authentication);
         HttpSession session = req.getSession(true);
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
-    @Override
-    public void loginNewUser(UserData userData, HttpServletRequest req, String role) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(role));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userData.getLogin(), userData.getPassword(), authorities);
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(authentication);
-        HttpSession session = req.getSession(true);
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+    private void registerUserTemplate(UserData user, String role) {
+        User userEntity = new User();
+        BeanUtils.copyProperties(user, userEntity);
+        userEntity.setRole(role);
+        userRepository.save(userEntity);
     }
 }

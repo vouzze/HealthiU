@@ -13,7 +13,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class Message {
     @Id
-    @GeneratedValue
     private Long id;
 
     @Column

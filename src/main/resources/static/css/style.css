@@ -198,6 +198,22 @@ body {
     display: none;
 }
 
+.user_request_template {
+    display: none;
+}
+
+.doctor_request_template {
+    display: none;
+}
+
 .chat_room_style {
     color: #45829b;
+}
+
+.user_request_style {
+    color: #f5886e;
+}
+
+.doctor_request_style {
+    color: #a3d063;
 }

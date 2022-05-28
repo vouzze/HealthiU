@@ -19,4 +19,6 @@ public interface UserService {
     void loginNewUser(UserData userData, HttpServletRequest req);
 
     void loginNewUser(UserData userData, HttpServletRequest req, String role);
+
+    User findUserByLogin(String login);
 }
