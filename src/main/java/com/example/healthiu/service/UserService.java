@@ -12,6 +12,8 @@ public interface UserService {
 
     void register(UserData user, String role);
 
+    void updateUserInfo(UserData userData);
+
     boolean checkIfUserExist(String email);
 
     boolean checkIfEmailExist(String email);
@@ -21,4 +23,6 @@ public interface UserService {
     void loginNewUser(UserData userData, HttpServletRequest req, String role);
 
     User findUserByLogin(String login);
+
+    User findUserByEmail(String email);
 }

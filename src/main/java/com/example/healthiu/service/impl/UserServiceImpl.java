@@ -39,6 +39,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUserInfo(UserData userData) {
+        User user = userRepository.findUserByLogin(userData.getLogin());
+        user.setName(userData.getName());
+        user.setEmail(userData.getEmail());
+        user.setPassword(userData.getPassword());
+        user.setDateOfBirth(userData.getDateOfBirth());
+        userRepository.save(user);
+        System.out.println(user.getEmail());
+    }
+    @Override
     public boolean checkIfUserExist(String login) {
         return userRepository.findByLogin(login).isPresent();
     }
@@ -61,6 +71,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByLogin(String login) {
         return userRepository.findUserByLogin(login);
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 
 

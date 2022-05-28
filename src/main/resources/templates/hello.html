@@ -7,14 +7,38 @@
 <body>
 <h1 th:inline="text">Hello [[${role}]] [[${#httpServletRequest.remoteUser}]]!</h1>
 <div th:if="${role == 'ADMIN'}">Text visible to admin.</div>
-<form th:action="@{/hello}" method="post">
-    <div><label> Login : <input type="text" name="login" readonly th:value="${login}"/> </label></div>
-    <div><label> Name : <input type="text" name="name" th:value="${name}"/> </label></div>
-    <div><label> Email : <input type="text" name="email" th:value="${email}"/> </label></div>
-    <div><label> Password: <input type="password" name="password" th:value="${password}"/> </label></div>
-    <div><label> Date of birth: <input type="date" name="date_of_birth" th:value="${date_of_birth}"/> </label></div>
-<!--    <div><input type="submit" value="Get User Info"/></div>-->
+<!--<form th:action="@{/hello}" method="post">-->
+<!--    <div><label> Login : <input type="text" name="login" readonly th:value="${login}"/> </label></div>-->
+<!--    <div><label> Name : <input type="text" name="name" th:value="${name}"/> </label></div>-->
+<!--    <div><label> Email : <input type="text" name="email" th:value="${email}"/> </label></div>-->
+<!--    <div><label> Password: <input type="password" name="password" th:value="${password}"/> </label></div>-->
+<!--    <div><label> Date of birth: <input type="date" name="date_of_birth" th:value="${date_of_birth}"/> </label></div>-->
+<!--    &lt;!&ndash;    <div><input type="submit" value="Get User Info"/></div>&ndash;&gt;-->
+<!--</form>-->
+
+<form id="register_form" th:action="@{/hello/edit}" th:object="${userData}" method="post">
+    <div><label> Login : <input type="text" th:field="*{login}" th:value="${login}" name="login" readonly/> </label>
+        <div id="error_login" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
+    </div>
+    <div><label> Name : <input type="text" th:field="*{name}" th:value="${name}" name="name"/> </label>
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    </div>
+    <div><label> Email : <input type="text" th:field="*{email}" th:value="${email}" name="email"/> </label>
+        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    </div>
+    <div><label> Password: <input type="password" th:field="*{password}" th:value="${password}" name="password"/> </label>
+        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+    </div>
+    <div><label> Confirm Password: <input type="password" th:field="*{confirmPassword}" th:value="${password}" name="confirm_password"/> </label>
+        <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+    </div>
+    <div><label> Date of birth: <input type="date" th:field="*{dateOfBirth}" th:value="${dateOfBirth}" name="date_of_birth"/> </label>
+        <div th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
+    </div>
+    <div><input type="submit" value="Edit"/></div>
+<!--    <input type="button" onclick="location.href='/send'" name="action" value="send" />-->
 </form>
+
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Sign Out"/>
 </form>
