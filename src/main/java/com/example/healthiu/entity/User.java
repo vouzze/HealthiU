@@ -11,11 +11,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 public class User {
-
     @Id
-    private Long id;
-
-    @Column(unique = true)
     private String login;
     @Column
     private String name;

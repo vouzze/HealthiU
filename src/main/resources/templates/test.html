@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <title>Test!</title>
+</head>
+<body>
+<h1 th:inline="text">Test Page</h1>
+<form id="test_form" th:action="@{/test/result}" th:object="${testData}" method="post">
+    <div><ul>
+        <li th:each="gender : ${allGenders}">
+            <input type="radio" th:field="*{gender}" th:value="${gender}"/>
+            <label th:for="${#ids.prev('gender')}" th:text="${gender}">MALE</label>
+        </li>
+    </ul>
+    </div>
+    <div><label> Age : <input id="age" type="number" th:field="*{age}" name="age"/> </label>
+        <div id="error_age"></div>
+    </div>
+    <div><label> Height : <input id="height" type="text" th:field="*{height}" name="height"/> </label>
+        <div id="error_height"></div>
+    </div>
+    <div><label> Weight: <input id="weight" type="text" th:field="*{weight}" name="weight"/> </label>
+        <div id="error_weight"></div>
+    </div>
+    <div><label> Waist Size: <input id="waist_size" type="text" th:field="*{waistSize}" name="waistSize"/> </label>
+        <div id="error_waist_size"></div>
+    </div>
+    <div><label> Chest Size: <input id="chest_size" type="text" th:field="*{chestSize}" name="chestSize"/> </label>
+        <div id="error_chest_size"></div>
+    </div>
+    <div><label> Hip Size: <input id="hip_size" type="text" th:field="*{hipSize}" name="hipSize"/> </label>
+        <div id="error_hip_size"></div>
+    </div>
+    <div>
+        <label>Select your blood type:</label>
+        <select th:field="*{bloodType}">
+            <option th:each="bloodType : ${allBloodTypes}"
+                    th:value="${bloodType}"
+                    th:text="${bloodType}">O+
+            </option>
+        </select>
+    </div>
+    <div><input type="submit" value="Get Result"/></div>
+</form>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:inline="javascript">
+    let test = document.getElementById("test_form");
+    let errorAge = $('#error_age');
+    let errorHeight = $('#error_height');
+    let errorWeight = $('#error_weight');
+    let errorWaistSize = $('#error_waist_size');
+    let errorChestSize = $('#error_chest_size');
+    let errorHipSize = $('#error_hip_size');
+
+    test.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        let errorCount = 0;
+
+        let age = $('#age').val();
+        let height = $('#height').val();
+        let weight = $('#weight').val();
+        let waistSize = $('#waist_size').val();
+        let chestSize = $('#chest_size').val();
+        let hipSize = $('#hip_size').val();
+
+        errorAge.text(null);
+        errorHeight.text(null);
+        errorWeight.text(null);
+        errorWaistSize.text(null);
+        errorChestSize.text(null);
+        errorHipSize.text(null);
+
+        if (age < 14 || age > 130) {
+            console.log("You are filthy little " + age + " year old brat");
+            errorAge.text("Only people from 14 to 130 are allowed to use this test.");
+            errorCount++;
+        }
+
+        if (isNaN(height)) {
+            errorHeight.text("Invalid height");
+            errorCount++;
+        } else if (height < 1) {
+            errorHeight.text("Invalid height");
+            errorCount++;
+        }
+
+        if (isNaN(weight)) {
+            errorWeight.text("Invalid weight");
+            errorCount++;
+        } else if (weight < 1) {
+            errorWeight.text("Invalid weight");
+            errorCount++;
+        }
+
+        if (isNaN(waistSize)) {
+            errorWaistSize.text("Invalid waist size");
+            errorCount++;
+        } else if (waistSize < 1) {
+            errorWaistSize.text("Invalid waist size");
+            errorCount++;
+        }
+
+        if (isNaN(chestSize)) {
+            errorChestSize.text("Invalid chest size");
+            errorCount++;
+        } else if (chestSize < 1) {
+            errorChestSize.text("Invalid chest size");
+            errorCount++;
+        }
+
+        if (isNaN(hipSize)) {
+            errorHipSize.text("Invalid hip size");
+            errorCount++;
+        } else if (hipSize < 1) {
+            errorHipSize.text("Invalid hip size");
+            errorCount++;
+        }
+
+        if (errorCount === 0) {
+            test.submit();
+        }
+    })
+</script>
+</body>
+</html>

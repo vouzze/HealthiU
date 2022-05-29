@@ -41,16 +41,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserInfo(UserData userData) {
         User user = userRepository.findUserByLogin(userData.getLogin());
-        user.setName(userData.getName());
-        user.setEmail(userData.getEmail());
-        user.setPassword(userData.getPassword());
-        user.setDateOfBirth(userData.getDateOfBirth());
-        userRepository.save(user);
+        int changeCount = 0;
+        if (!user.getName().equals(userData.getName())){
+            changeCount++;
+            user.setName(userData.getName());
+        }
+        if (!user.getEmail().equals(userData.getEmail())) {
+            changeCount++;
+            user.setEmail(userData.getEmail());
+        }
+        if (!user.getPassword().equals(userData.getPassword())) {
+            changeCount++;
+            user.setPassword(userData.getPassword());
+        }
+        if (!user.getDateOfBirth().equals(userData.getDateOfBirth())) {
+            changeCount++;
+            user.setDateOfBirth(userData.getDateOfBirth());
+        }
+        if (changeCount > 0) {
+            userRepository.save(user);
+        }
         System.out.println(user.getEmail());
     }
     @Override
     public boolean checkIfUserExist(String login) {
-        return userRepository.findByLogin(login).isPresent();
+        return userRepository.findById(login).isPresent();
     }
 
     @Override
