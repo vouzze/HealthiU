@@ -12,9 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 @Controller
@@ -38,10 +41,10 @@ public class AccountController {
                 !Objects.equals(userService.findUserByEmail(userData.getEmail()).getLogin(), userData.getLogin())) {
             System.out.println("email exists");
             model.addAttribute("email_exists", "Email already exists");
-            return "redirect:hello";
+            return "hello";
         }
         userService.updateUserInfo(userData);
-        return "hello";
+        return "redirect:hello";
     }
 
     private void addAttributes(Model model, User user) {
@@ -56,14 +59,4 @@ public class AccountController {
         model.addAttribute("dateOfBirth", userData.getDateOfBirth());
         model.addAttribute("role", user.getRole());
     }
-
-//    @PostMapping("/hello")
-//    public void getUserInfo(Model model, HttpServletRequest req) {
-//        User user = userRepository.findUserByLogin(req.getRemoteUser());
-//        model.addAttribute("name",user.getName() );
-//        model.addAttribute("email", user.getEmail());
-//        model.addAttribute("password", user.getPassword());
-//        model.addAttribute("date_of_birth", user.getDateOfBirth());
-//
-//    }
 }

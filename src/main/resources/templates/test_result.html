@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <title>Test result!</title>
+</head>
+<body>
+<h1 th:inline="text">Test Result Page</h1>
+<p>Your bmi is [[${bmi}]]</p>
+<p>[[${resultBmi}]]</p>
+<button sec:authorize="isAuthenticated()">Save test</button>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:inline="javascript">
+</script>
+</body>
+</html>

@@ -32,9 +32,9 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 
         final String password = (String) upAuth.getCredentials();
 
-        final String storedPassword = userRepository.findByLogin(login).map(User::getPassword)
+        final String storedPassword = userRepository.findById(login).map(User::getPassword)
                 .orElseThrow(() -> new BadCredentialsException("illegal id or password"));
-        final String role =  userRepository.findByLogin(login).map(User::getRole)
+        final String role =  userRepository.findById(login).map(User::getRole)
                 .orElseThrow(() -> new BadCredentialsException("illegal role"));
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
