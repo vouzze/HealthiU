@@ -12,6 +12,8 @@ public interface UserService {
 
     void register(UserData user, String role);
 
+    int checkChangesCount(UserData userData);
+
     void updateUserInfo(UserData userData);
 
     boolean checkIfUserExist(String email);

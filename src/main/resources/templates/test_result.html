@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
@@ -9,10 +9,38 @@
 <body>
 <h1 th:inline="text">Test Result Page</h1>
 <p>Your bmi is [[${bmi}]]</p>
-<p>[[${resultBmi}]]</p>
-<button sec:authorize="isAuthenticated()">Save test</button>
+<p>[[${result}]]</p>
+<p>Recommended products: [[${goodRation}]]</p>
+<p>It is better for you to avoid such products: [[${badRation}]]</p>
+<label>Daily Calories:</label>
+<ul>
+    <li th:each="calorie : ${caloriesList}">
+        <label th:text="${calorie}">Calorie</label>
+    </li>
+</ul>
+<th:block sec:authorize="isAuthenticated()">
+    <button id="save_test" onclick="saveResult()">Save test</button>
+    <div id="test_saved"></div>
+</th:block>
+<div id="test_data" th:text="${testData}" style="display: none"></div>
+
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<!--<script th:src="@{/js/script.js}"></script>-->
 <script th:inline="javascript">
+    let testSaved = $('#test_saved');
+    function saveResult() {
+        testSaved.text(null);
+        console.log("saving");
+        let testDataVal = $('#test_data').text();
+        $.ajax({
+            type: "GET",
+            url: "/test/result/save",
+            data: {
+                testData: testDataVal
+            } ,
+            success: testSaved.text("Test was successfully saved.")
+        });
+    }
 </script>
 </body>
 </html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <title>Saved Test!</title>
+</head>
+<body>
+<h1 th:inline="text">Saved Test!</h1>
+
+<div th:if="${isTestInUser}">
+    <p>Gender: [[${gender}]]</p>
+    <p>Age: [[${age}]]</p>
+    <p>Height: [[${height}]]</p>
+    <p>Weight: [[${weight}]]</p>
+    <p>Waist Size: [[${waistSize}]]</p>
+    <p>Chest Size: [[${chestSize}]]</p>
+    <p>Hip Size: [[${hipSize}]]</p>
+    <p>Blood Type: [[${bloodType}]]</p>
+    <p>Result: [[${testResult}]]</p>
+    <p>BMI: [[${bmi}]]</p>
+</div>
+<div th:if="${!isTestInUser}">Please, click here to get a test. <br><a th:href="@{/test}">Test yourself</a></div>
+<button id="back_to_edit_profile" onclick="window.history.go(-1); return false;">Back</button>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+</body>
+</html>

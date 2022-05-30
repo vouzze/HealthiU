@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <title>AdminRegister Doctor or Admin </title>
+</head>
+<body>
+<form id="admin_register_form" th:action="@{/admin-register}" th:object="${userData}" method="post">
+    <div><label> Login : <input id="login_admin_register" type="text" th:field="*{login}" name="login"/> </label>
+        <div id="error_login_admin_register"></div>
+    </div>
+    <div><label> Name : <input id="name_admin_register" type="text" th:field="*{name}" name="name"/> </label>
+        <div id="error_name_admin_register"></div>
+    </div>
+    <div><label> Email : <input id="email_admin_register" type="text" th:field="*{email}" name="email"/> </label>
+        <div id="error_email_admin_register"></div>
+    </div>
+    <div><label> Password: <input id="password_admin_register" type="password" th:field="*{password}" name="password"/>
+    </label>
+        <div id="error_password_admin_register"></div>
+    </div>
+    <div><label> Confirm Password: <input id="confirm_password_admin_register" type="password" th:field="*{confirmPassword}"
+                                          name="confirm_password"/> </label>
+        <div id="error_confirm_password_admin_register"></div>
+    </div>
+    <div><label> Date of birth: <input id="date_of_birth_admin_register" type="date" th:field="*{dateOfBirth}"
+                                       name="date_of_birth"/> </label>
+        <div id="error_date_of_birth_admin_register"></div>
+    </div>
+    <div>
+        <label>Select role:
+            <select th:name="role">
+                <option th:each="role : ${allRoles}"
+                        th:value="${role}"
+                        th:text="${role}">USER
+                </option>
+            </select>
+        </label>
+    </div>
+    <div><input type="submit" value="Sign Up"/></div>
+    <div id="user_exists_admin_register" th:text="${userExists}"></div>
+    <div id="successful_registration" th:text="${successfulRegistration}"></div>
+</form>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:inline="javascript">
+    let admin_registerForm = document.getElementById("admin_register_form");
+    let errorLoginAdminAdminRegister = $('#error_login_admin_register');
+    let errorNameAdminRegister = $('#error_name_admin_register');
+    let errorEmailAdminRegister = $('#error_email_admin_register');
+    let errorPasswordAdminRegister = $('#error_password_admin_register');
+    let errorConfirmPasswordAdminRegister = $('#error_confirm_password_admin_register');
+    let errorDateOfBirthAdminRegister = $('#error_date_of_birth_admin_register');
+
+    admin_registerForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        $('#user_exists_admin_register').text(null);
+        $('#successful_registration').text(null);
+
+        let errorCount = 0;
+
+        let login = $('#login_admin_register').val();
+        let name = $('#name_admin_register').val();
+        let email = $('#email_admin_register').val();
+        let password = $('#password_admin_register').val();
+        let confirmPassword = $('#confirm_password_admin_register').val();
+        let dateOfBirth = $('#date_of_birth_admin_register').val();
+
+        errorLoginAdminAdminRegister.text(null);
+        errorNameAdminRegister.text(null);
+        errorEmailAdminRegister.text(null);
+        errorPasswordAdminRegister.text(null);
+        errorConfirmPasswordAdminRegister.text(null);
+        errorDateOfBirthAdminRegister.text(null);
+
+        if (!checkLogin(login)) {
+            errorLoginAdminAdminRegister.text("Invalid login.");
+            errorCount++;
+        }
+
+        if (!checkName(name)) {
+            errorNameAdminRegister.text("Invalid name.");
+            errorCount++;
+        }
+
+        if (!checkEmail(email)) {
+            errorEmailAdminRegister.text("Invalid email.");
+            errorCount++;
+        }
+
+        if (!checkPassword(password)) {
+            errorPasswordAdminRegister.text("Invalid password.");
+            errorCount++;
+        }
+
+        if (!checkConfirmPassword(password, confirmPassword)) {
+            errorConfirmPasswordAdminRegister.text("Passwords don't match.");
+            errorCount++;
+        }
+
+        if (!checkDateOfBirth(dateOfBirth)) {
+            errorDateOfBirthAdminRegister.text("Invalid date of birth. Only users from 14 years old are allowed.");
+            errorCount++;
+        }
+
+        if (errorCount === 0) {
+            admin_registerForm.submit();
+        }
+    })
+
+    function checkLogin(login) {
+        if (isEmpty(login)) {
+            return false;
+        }
+
+        if (hasSpaces(login)) {
+            return false;
+        }
+
+        if (hasSpacesBeforeOrAfter(login)) {
+            return false;
+        }
+
+        let rNonLatin = /[^\u0000-\u007f]/;
+
+        if (rNonLatin.test(login)) {
+            return false;
+        }
+
+        return !(login.length < 3 || login.length > 10);
+    }
+
+    function checkName(name) {
+        if (isEmpty(name)) {
+            return false;
+        }
+
+        if (hasSpacesBeforeOrAfter(name)) {
+            return false;
+        }
+
+        return !(name.length < 2 || name.length > 20);
+    }
+
+    function checkEmail(email) {
+        const regex_pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regex_pattern.test(email);
+    }
+
+    function checkPassword(password) {
+        if (isEmpty(password)) {
+            return false;
+        }
+
+        if (hasSpacesBeforeOrAfter(password)) {
+            return false;
+        }
+
+        if (hasSpaces(password)) {
+            return false;
+        }
+
+        return !(password.length < 6 || password.length > 10);
+    }
+
+    function checkConfirmPassword(password, confirmPassword) {
+        return password === confirmPassword;
+    }
+
+    function checkDateOfBirth(dateOfBirth) {
+        let ageDifMs = Date.now() - new Date(dateOfBirth);
+        let ageDate = new Date(ageDifMs);
+        return (Math.abs(ageDate.getUTCFullYear() - 1970)) >= 14;
+    }
+
+    function isEmpty(text) {
+        return text.length === 0 || isSpaces(text);
+    }
+
+    function hasSpaces(text) {
+        for (let i = 0; i < text.length; i++) {
+            if ((text[i]) === ' ') {
+                return true;
+            }
+        }
+        return false;
+    }
+    function isSpaces(text) {
+        return text.trim().length === 0;
+    }
+    function hasSpacesBeforeOrAfter(text) {
+        return text.length > text.trim().length;
+    }
+</script>
+</body>
+</html>

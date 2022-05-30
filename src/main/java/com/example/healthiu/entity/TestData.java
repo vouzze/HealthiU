@@ -1,5 +1,7 @@
 package com.example.healthiu.entity;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 public class TestData implements Serializable {
@@ -7,8 +9,8 @@ public class TestData implements Serializable {
     private int age;
     private double height;
     private double weight;
-    private double waistSize;
     private double chestSize;
+    private double waistSize;
     private double hipSize;
     private String bloodType;
     private String testResult;
@@ -46,20 +48,18 @@ public class TestData implements Serializable {
         this.weight = weight;
     }
 
-    public double getWaistSize() {
-        return waistSize;
-    }
-
-    public void setWaistSize(double waistSize) {
-        this.waistSize = waistSize;
-    }
-
     public double getChestSize() {
         return chestSize;
     }
 
     public void setChestSize(double chestSize) {
         this.chestSize = chestSize;
+    }
+    public double getWaistSize() {
+        return waistSize;
+    }
+    public void setWaistSize(double waistSize) {
+        this.waistSize = waistSize;
     }
 
     public double getHipSize() {
@@ -97,15 +97,34 @@ public class TestData implements Serializable {
     public TestData() {
     }
 
-    public TestData(String gender, int age, double height, double weight, double waistSize, double chestSize,
+    public TestData(String gender, int age, double height, double weight, double chestSize, double waistSize,
                     double hipSize, String bloodType) {
         this.gender = gender;
         this.age = age;
         this.height = height;
         this.weight = weight;
-        this.waistSize = waistSize;
         this.chestSize = chestSize;
+        this.waistSize = waistSize;
         this.hipSize = hipSize;
         this.bloodType = bloodType;
+    }
+
+    public TestData(String gender, int age, double height, double weight, double chestSize, double waistSize,
+                    double hipSize, String bloodType, String testResult, double bmi) {
+        this.gender = gender;
+        this.age = age;
+        this.height = height;
+        this.weight = weight;
+        this.chestSize = chestSize;
+        this.waistSize = waistSize;
+        this.hipSize = hipSize;
+        this.bloodType = bloodType;
+        this.testResult = testResult;
+        this.bmi = bmi;
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }
