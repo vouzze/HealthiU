@@ -1,13 +1,13 @@
 package com.example.healthiu.service.impl;
 
-import com.example.healthiu.entity.Gender;
-import com.example.healthiu.entity.Test;
-import com.example.healthiu.entity.TestData;
-import com.example.healthiu.entity.TestResult;
+import com.example.healthiu.entity.*;
 import com.example.healthiu.repository.TestRepository;
 import com.example.healthiu.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("testService")
 public class TestServiceImpl implements TestService {
@@ -26,41 +26,196 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public String calculateResult(TestData testData) {
+        String testResult = TestResult.NORMAL.getTestResult();
         int bmiCo = calculateBmi(testData);
         int waistToHipRatioCo = calculateWaistToHipRatio(testData);
         int waistToHeightRatioCo = calculateWaistToHeightRatio(testData);
-        int waistRatio = calculateWaistRatio(testData);
-        int fatRatio = calculateBodyFatRatio(testData);
-        int chestToWaistRatio = calculateChestToWaistRatio(testData);
-        int sumCo = bmiCo + waistToHipRatioCo;
+        int waistRatioCo = calculateWaistRatio(testData);
+        int fatRatioCo = calculateBodyFatRatio(testData);
+        int chestToWaistRatioCo = calculateChestToWaistRatio(testData);
+        int sumCo = bmiCo + waistToHipRatioCo + waistToHeightRatioCo + waistRatioCo + fatRatioCo + chestToWaistRatioCo;
 
-//        if (sumCo == 0) {
-//            return TestResult.UNDERWEIGHT.getTestResult();
-//        }
-//
-//        if (sumCo == 3) {
-//            return TestResult.OVERWEIGHT.getTestResult();
-//        }
-//
-//        if (sumCo == 4) {
-//            return TestResult.OBESE.getTestResult();
-//        }
-//
-//        if (sumCo == 5) {
-//            return TestResult.EXTREMELY_OBESE.getTestResult();
-//        }
-//
-//        if (sumCo == 6) {
-//            return TestResult.OBESE_AS_HELL.getTestResult();
-//        }
-//
-//        return TestResult.NORMAL.getTestResult();
-        return "WaistToHip = " + waistToHipRatioCo + "\nWaistToHeight = " + waistToHeightRatioCo +
-                "\nWaist = " + waistRatio + "\nFat = " + fatRatio + "\nChestToWaist = " + chestToWaistRatio;
+        if (testData.getGender().equals(Gender.MALE.getGender())) {
+            if (waistRatioCo >= 1) {
+                if (chestToWaistRatioCo == 1) {
+                    if (bmiCo <= 2) {
+                        testResult = TestResult.OBESE.getTestResult();
+                    } else if (bmiCo <= 3) {
+                        testResult = TestResult.EXTREMELY_OBESE.getTestResult();
+                    } else if (bmiCo <= 4) {
+                        testResult = TestResult.MORBIDLY_OBESE.getTestResult();
+                    }
+                } else {
+                    if (waistToHeightRatioCo <= 0) {
+                        testResult = TestResult.NORMAL.getTestResult();
+                    } else {
+                        testResult = TestResult.OVERWEIGHT.getTestResult();
+                    }
+                }
+            } else {
+                if (waistToHeightRatioCo <= 0) {
+                    if (sumCo <= -3) {
+                        testResult = TestResult.UNDERWEIGHT.getTestResult();
+                    } else {
+                        testResult = TestResult.NORMAL.getTestResult();
+                    }
+                } else {
+                    testResult = TestResult.OVERWEIGHT.getTestResult();
+                }
+            }
+        } else {
+            if (waistRatioCo >= 1) {
+                if (waistToHipRatioCo == 0) {
+                    if (chestToWaistRatioCo == 1) {
+                        if (bmiCo <= 1) {
+                            testResult = TestResult.OVERWEIGHT.getTestResult();
+                        } else if (bmiCo <= 2) {
+                            testResult = TestResult.OBESE.getTestResult();
+                        } else {
+                            testResult = TestResult.EXTREMELY_OBESE.getTestResult();
+                        }
+                    } else {
+                        if (bmiCo <= 0) {
+                            testResult = TestResult.NORMAL.getTestResult();
+                        } else if (bmiCo <= 1) {
+                            testResult = TestResult.OVERWEIGHT.getTestResult();
+                        } else if (bmiCo <= 2) {
+                            testResult = TestResult.OBESE.getTestResult();
+                        } else {
+                            testResult = TestResult.EXTREMELY_OBESE.getTestResult();
+                        }
+                    }
+                } else {
+                    testResult = switch (bmiCo) {
+                        case 2 -> TestResult.OBESE.getTestResult();
+                        case 3 -> TestResult.EXTREMELY_OBESE.getTestResult();
+                        case 4 -> TestResult.MORBIDLY_OBESE.getTestResult();
+                        default -> TestResult.OVERWEIGHT.getTestResult();
+                    };
+                }
+            } else {
+                if (waistToHeightRatioCo <= 0) {
+                    if (bmiCo < 0) {
+                        testResult = TestResult.UNDERWEIGHT.getTestResult();
+                    } else if (bmiCo < 1) {
+                        testResult = TestResult.NORMAL.getTestResult();
+                    } else {
+                        testResult = TestResult.OVERWEIGHT.getTestResult();
+                    }
+                } else {
+                    testResult = TestResult.OVERWEIGHT.getTestResult();
+                }
+            }
+        }
+
+
+        return testResult;
     }
 
     @Override
-    public boolean isTestDataValid(TestData testData, String userLogin) {
+    public String calculateGoodRation(BloodType bloodType, String testResult) {
+        String ration;
+        switch (bloodType) {
+            case A -> {
+                if (testResult.equals(TestResult.UNDERWEIGHT.getTestResult())) {
+                    ration = TestResult.RATION_A_GAIN.getTestResult();
+                } else {
+                    ration = TestResult.RATION_A_LOSE.getTestResult();
+                }
+            }
+            case B -> {
+                if (testResult.equals(TestResult.UNDERWEIGHT.getTestResult())) {
+                    ration = TestResult.RATION_B_GAIN.getTestResult();
+                } else {
+                    ration = TestResult.RATION_B_LOSE.getTestResult();
+                }
+            }
+            case AB -> {
+                if (testResult.equals(TestResult.UNDERWEIGHT.getTestResult())) {
+                    ration = TestResult.RATION_AB_GAIN.getTestResult();
+                } else {
+                    ration = TestResult.RATION_AB_LOSE.getTestResult();
+                }
+            }
+            default -> {
+                if (testResult.equals(TestResult.UNDERWEIGHT.getTestResult())) {
+                    ration = TestResult.RATION_O_GAIN.getTestResult();
+                } else {
+                    ration = TestResult.RATION_O_LOSE.getTestResult();
+                }
+            }
+        }
+        return ration;
+    }
+
+    @Override
+    public String calculateBadRation(BloodType bloodType, String testResult) {
+        String ration;
+        switch (bloodType) {
+            case A -> {
+                if (testResult.equals(TestResult.UNDERWEIGHT.getTestResult())) {
+                    ration = TestResult.RATION_A_STOP_LOSE.getTestResult();
+                } else {
+                    ration = TestResult.RATION_A_STOP_GAIN.getTestResult();
+                }
+            }
+            case B -> {
+                if (testResult.equals(TestResult.UNDERWEIGHT.getTestResult())) {
+                    ration = TestResult.RATION_B_STOP_LOSE.getTestResult();
+                } else {
+                    ration = TestResult.RATION_B_STOP_GAIN.getTestResult();
+                }
+            }
+            case AB -> {
+                if (testResult.equals(TestResult.UNDERWEIGHT.getTestResult())) {
+                    ration = TestResult.RATION_AB_STOP_LOSE.getTestResult();
+                } else {
+                    ration = TestResult.RATION_AB_STOP_GAIN.getTestResult();
+                }
+            }
+            default -> {
+                if (testResult.equals(TestResult.UNDERWEIGHT.getTestResult())) {
+                    ration = TestResult.RATION_O_STOP_LOSE.getTestResult();
+                } else {
+                    ration = TestResult.RATION_O_STOP_GAIN.getTestResult();
+                }
+            }
+        }
+        return ration;
+    }
+
+    @Override
+    public List<String> calculateCalories(TestData testData) {
+        List<String> calories = new ArrayList<>();
+        double kgInCal = 7000;
+        double baseCalorieCalculation = 10 * testData.getWeight() + 6.25 * testData.getHeight() - 5 * testData.getAge();
+        double caloriesToMaintain = (testData.getGender().equals(Gender.MALE.getGender())) ?
+                (baseCalorieCalculation + 5) * 1.5 : (baseCalorieCalculation - 161) * 1.2;
+        double caloriesToLose05Kg = caloriesToMaintain - kgInCal * 0.5 / 7;
+        double caloriesToLose1Kg = caloriesToMaintain - kgInCal / 7;
+        double caloriesToGain05Kg = caloriesToMaintain + kgInCal * 0.5 / 7;
+        double caloriesToGain1Kg = caloriesToMaintain + kgInCal / 7;
+
+        if (testData.getTestResult().equals(TestResult.UNDERWEIGHT.getTestResult())) {
+            calories.add(TestResult.CALORIES_TO_MAINTAIN.getTestResult() + String.format("%.1f", caloriesToMaintain));
+            calories.add(TestResult.CALORIES_TO_GAIN_05.getTestResult() + String.format("%.1f", caloriesToGain05Kg));
+            calories.add(TestResult.CALORIES_TO_GAIN_1.getTestResult() + String.format("%.1f", caloriesToGain1Kg));
+        } else if (testData.getTestResult().equals(TestResult.NORMAL.getTestResult())) {
+            calories.add(TestResult.CALORIES_TO_MAINTAIN.getTestResult() + String.format("%.1f", caloriesToMaintain));
+        } else if (testData.getTestResult().equals(TestResult.OVERWEIGHT.getTestResult())) {
+            calories.add(TestResult.CALORIES_TO_MAINTAIN.getTestResult() + String.format("%.1f", caloriesToMaintain));
+            calories.add(TestResult.CALORIES_TO_LOSE_05.getTestResult() + String.format("%.1f", caloriesToLose05Kg));
+        } else {
+            calories.add(TestResult.CALORIES_TO_MAINTAIN.getTestResult() + String.format("%.1f", caloriesToMaintain));
+            calories.add(TestResult.CALORIES_TO_LOSE_05.getTestResult() + String.format("%.1f", caloriesToLose05Kg));
+            calories.add(TestResult.CALORIES_TO_LOSE_1.getTestResult() + String.format("%.1f", caloriesToLose1Kg));
+        }
+
+        return calories;
+    }
+
+    @Override
+    public void saveTest(TestData testData, String userLogin) {
         try {
             Test test = new Test(userLogin,
                     testData.getGender(),
@@ -70,18 +225,19 @@ public class TestServiceImpl implements TestService {
                     testData.getWaistSize(),
                     testData.getChestSize(),
                     testData.getHipSize(),
-                    testData.getBloodType());
-            System.out.println(test.getHeight());
+                    testData.getBloodType(),
+                    testData.getTestResult(),
+                    testData.getBmi());
             testRepository.save(test);
         } catch (Exception ex) {
-            System.out.println("bad test");
             System.out.println(ex.getMessage());
-            return false;
         }
-        System.out.println("good test");
-        return true;
     }
 
+    @Override
+    public Test findTestByLogin(String login) {
+        return testRepository.findTestByUserLogin(login);
+    }
 
 
 
@@ -134,9 +290,6 @@ public class TestServiceImpl implements TestService {
 
     private int calculateWaistToHeightRatio(TestData testData) {
         double ratio = testData.getWaistSize() / testData.getHeight();
-        System.out.println(ratio);
-        System.out.println(testData.getWaistSize());
-        System.out.println(testData.getHeight());
         int obesity = 0;
 
         if (testData.getAge() <= 15) {
@@ -190,7 +343,7 @@ public class TestServiceImpl implements TestService {
         return obesity;
     }
 
-    private int calculateWaistRatio (TestData testData) {
+    private int calculateWaistRatio(TestData testData) {
         int obesity = 0;
         double waistSize = testData.getWaistSize();
 
@@ -213,7 +366,7 @@ public class TestServiceImpl implements TestService {
         return obesity;
     }
 
-    private int calculateBodyFatRatio (TestData testData) {
+    private int calculateBodyFatRatio(TestData testData) {
         int obesity = 0;
         double hipBias = 76;
         double heightBias = 188;
@@ -232,7 +385,7 @@ public class TestServiceImpl implements TestService {
             if (fat >= 5 && fat < 8) {
                 obesity = -1;
             }
-            if (fat >= 19 && fat < 25 ) {
+            if (fat >= 19 && fat < 25) {
                 obesity = 1;
             }
             if (fat >= 25) {
@@ -245,7 +398,7 @@ public class TestServiceImpl implements TestService {
             if (fat >= 18 && fat < 21) {
                 obesity = -1;
             }
-            if (fat >= 33 && fat < 39 ) {
+            if (fat >= 33 && fat < 39) {
                 obesity = 1;
             }
             if (fat >= 39) {
@@ -263,8 +416,6 @@ public class TestServiceImpl implements TestService {
         return obesity;
     }
     /////////////////// CALCULATIONS
-
-
 
 
     //////// CALCULATION HELPERS

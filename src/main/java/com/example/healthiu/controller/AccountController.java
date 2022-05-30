@@ -2,22 +2,15 @@ package com.example.healthiu.controller;
 
 import com.example.healthiu.entity.User;
 import com.example.healthiu.entity.UserData;
-import com.example.healthiu.repository.UserRepository;
 import com.example.healthiu.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Objects;
 
 @Controller
@@ -25,29 +18,30 @@ public class AccountController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/hello")
-    public String getHello(Model model, HttpServletRequest req) {
-        addAttributes(model, userService.findUserByLogin(req.getRemoteUser()));
-        return "hello";
+    @GetMapping("/profile")
+    public String getEditProfile(Model model, HttpServletRequest req) {
+        addAttributesForUser(model, userService.findUserByLogin(req.getRemoteUser()));
+        return "profile";
     }
 
-    @PostMapping("/hello/edit")
-    public String editProfile(@Valid UserData userData, BindingResult result, HttpServletRequest req, Model model) {
-        if (result.hasErrors()) {
-            System.out.println("Invalid user");
-            return "hello";
-        }
+    @PostMapping("/profile/edit")
+    public String editProfile(UserData userData, Model model) {
         if (userService.checkIfEmailExist(userData.getEmail()) &&
                 !Objects.equals(userService.findUserByEmail(userData.getEmail()).getLogin(), userData.getLogin())) {
-            System.out.println("email exists");
-            model.addAttribute("email_exists", "Email already exists");
-            return "hello";
+            model.addAttribute("userData", userData);
+            model.addAttribute("emailExists", "User with this email already exists.");
+            return "profile";
+        }
+        if (userService.checkChangesCount(userData) == 0) {
+            model.addAttribute("successfulEdit", "No changes were made!");
+            return "profile";
         }
         userService.updateUserInfo(userData);
-        return "redirect:hello";
+        model.addAttribute("successfulEdit", "Profile is edited successfully!");
+        return "profile";
     }
 
-    private void addAttributes(Model model, User user) {
+    private void addAttributesForUser(Model model, User user) {
         UserData userData = new UserData();
         BeanUtils.copyProperties(user, userData);
         userData.setConfirmPassword(userData.getPassword());
@@ -55,8 +49,8 @@ public class AccountController {
         model.addAttribute("login", userData.getLogin());
         model.addAttribute("name", userData.getName());
         model.addAttribute("email", userData.getEmail());
-        model.addAttribute("password", userData.getPassword());
-        model.addAttribute("dateOfBirth", userData.getDateOfBirth());
+        model.addAttribute("dateOfBirth", user.getDateOfBirth());
         model.addAttribute("role", user.getRole());
+        model.addAttribute("userExists", null);
     }
 }

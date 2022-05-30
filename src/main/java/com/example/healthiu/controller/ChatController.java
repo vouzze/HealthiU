@@ -40,11 +40,11 @@ public class ChatController {
         String senderLogin = req.getRemoteUser();
         String recipientLogin = "doctor";
 
-        if (role.equals(Role.ADMIN.getRole())) {
+        if (role.equals(Role.ADMIN.toString())) {
             return "redirect:/chatroom/admin";
         }
 
-        if (role.equals(Role.USER.getRole())) {
+        if (role.equals(Role.USER.toString())) {
             if (chatRoomService.checkIfChatRoomExists(senderLogin)) {
                 recipientLogin = chatRoomService.findRecipientLoginForChatInit(senderLogin);
             } else {
@@ -52,7 +52,7 @@ public class ChatController {
             }
         }
 
-        if (role.equals(Role.DOCTOR.getRole())) {
+        if (role.equals(Role.DOCTOR.toString())) {
             chatRoomList = chatRoomService.findAllChatRoomsByDoctorLoginJson(senderLogin);
             model.addAttribute("requested_doctor",
                     chatRoomRequestService.checkIfDoctorChatRoomRequestExists(senderLogin));
@@ -69,10 +69,10 @@ public class ChatController {
                               Authentication authentication) throws JsonProcessingException {
         String role = getRole(authentication);
         String senderLogin = req.getRemoteUser();
-        if (role.equals(Role.ADMIN.getRole())) {
+        if (role.equals(Role.ADMIN.toString())) {
             return "redirect:/chatroom/admin";
         }
-        if (role.equals(Role.USER.getRole())) {
+        if (role.equals(Role.USER.toString())) {
             if (chatRoomService.checkIfChatRoomExists(senderLogin)) {
                 if (!chatRoomService.findRecipientLoginForChatInit(senderLogin).equals(recipientLogin)) {
                     return "redirect:/chatroom";
@@ -81,7 +81,7 @@ public class ChatController {
                 return "redirect:/chatroom/request-chatroom";
             }
         }
-        if (role.equals(Role.DOCTOR.getRole())) {
+        if (role.equals(Role.DOCTOR.toString())) {
             if (!chatRoomService.findAllChatRoomsByDoctorLoginJson(senderLogin).contains(recipientLogin)) {
                 return "redirect:/chatroom";
             } else {
@@ -157,7 +157,6 @@ public class ChatController {
             chatRoomRequestService.removeUserChatRoomRequest(userLogin);
         } else {
             throw new Exception("ChatRoom is invalid");
-//            model.addAttribute("isChatRoomInvalid", true);
         }
         System.out.println(model.toString());
         return "admin_chatroom";

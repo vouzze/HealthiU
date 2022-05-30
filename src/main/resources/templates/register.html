@@ -1,33 +1,185 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
     <title>Spring Security Example </title>
 </head>
 <body>
-<p th:text="${user_exists}"></p>
 <form id="register_form" th:action="@{/register}" th:object="${userData}" method="post">
-    <div><label> Login : <input type="text" th:field="*{login}" name="login"/> </label>
-                <div id="error_login" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
+    <div><label> Login : <input id="login_register" type="text" th:field="*{login}" name="login"/> </label>
+        <div id="error_login_register"></div>
     </div>
-    <div><label> Name : <input type="text" th:field="*{name}" name="name"/> </label>
-                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    <div><label> Name : <input id="name_register" type="text" th:field="*{name}" name="name"/> </label>
+        <div id="error_name_register"></div>
     </div>
-    <div><label> Email : <input type="text" th:field="*{email}" name="email"/> </label>
-                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <div><label> Email : <input id="email_register" type="text" th:field="*{email}" name="email"/> </label>
+        <div id="error_email_register"></div>
     </div>
-    <div><label> Password: <input type="password" th:field="*{password}" name="password"/> </label>
-                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+    <div><label> Password: <input id="password_register" type="password" th:field="*{password}" name="password"/>
+    </label>
+        <div id="error_password_register"></div>
     </div>
-    <div><label> Confirm Password: <input type="password" th:field="*{confirmPassword}" name="confirm_password"/> </label>
-        <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+    <div><label> Confirm Password: <input id="confirm_password_register" type="password" th:field="*{confirmPassword}"
+                                          name="confirm_password"/> </label>
+        <div id="error_confirm_password_register"></div>
     </div>
-    <div><label> Date of birth: <input type="date" th:field="*{dateOfBirth}" name="date_of_birth"/> </label>
-                <div th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
+    <div><label> Date of birth: <input id="date_of_birth_register" type="date" th:field="*{dateOfBirth}"
+                                       name="date_of_birth"/> </label>
+        <div id="error_date_of_birth_register"></div>
     </div>
     <div><input type="submit" value="Sign Up"/></div>
-    <input type="button" onclick="location.href='/send'" name="action" value="send" />
+    <div id="user_exists_register" th:text="${userExists}"></div>
 </form>
-</form>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:inline="javascript">
+    let registerForm = document.getElementById("register_form");
+    let errorLoginRegister = $('#error_login_register');
+    let errorNameRegister = $('#error_name_register');
+    let errorEmailRegister = $('#error_email_register');
+    let errorPasswordRegister = $('#error_password_register');
+    let errorConfirmPasswordRegister = $('#error_confirm_password_register');
+    let errorDateOfBirthRegister = $('#error_date_of_birth_register');
+
+    registerForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        $('#user_exists_register').text(null);
+        let errorCount = 0;
+
+        let login = $('#login_register').val();
+        let name = $('#name_register').val();
+        let email = $('#email_register').val();
+        let password = $('#password_register').val();
+        let confirmPassword = $('#confirm_password_register').val();
+        let dateOfBirth = $('#date_of_birth_register').val();
+
+        errorLoginRegister.text(null);
+        errorNameRegister.text(null);
+        errorEmailRegister.text(null);
+        errorPasswordRegister.text(null);
+        errorConfirmPasswordRegister.text(null);
+        errorDateOfBirthRegister.text(null);
+
+        if (!checkLogin(login)) {
+            errorLoginRegister.text("Invalid login.");
+            errorCount++;
+        }
+
+        if (!checkName(name)) {
+            errorNameRegister.text("Invalid name.");
+            errorCount++;
+        }
+
+        if (!checkEmail(email)) {
+            errorEmailRegister.text("Invalid email.");
+            errorCount++;
+        }
+
+        if (!checkPassword(password)) {
+            errorPasswordRegister.text("Invalid password.");
+            errorCount++;
+        }
+
+        if (!checkConfirmPassword(password, confirmPassword)) {
+            errorConfirmPasswordRegister.text("Passwords don't match.");
+            errorCount++;
+        }
+
+        if (!checkDateOfBirth(dateOfBirth)) {
+            errorDateOfBirthRegister.text("Invalid date of birth. Only users from 14 years old are allowed.");
+            errorCount++;
+        }
+
+        if (errorCount === 0) {
+            registerForm.submit();
+        }
+    })
+
+    function checkLogin(login) {
+        if (isEmpty(login)) {
+            return false;
+        }
+
+        if (hasSpaces(login)) {
+            return false;
+        }
+
+        if (hasSpacesBeforeOrAfter(login)) {
+            return false;
+        }
+
+        let rNonLatin = /[^\u0000-\u007f]/;
+
+        if (rNonLatin.test(login)) {
+            return false;
+        }
+
+        return !(login.length < 3 || login.length > 10);
+    }
+
+    function checkName(name) {
+        if (isEmpty(name)) {
+            return false;
+        }
+
+        if (hasSpacesBeforeOrAfter(name)) {
+            return false;
+        }
+
+        return !(name.length < 2 || name.length > 20);
+    }
+
+    function checkEmail(email) {
+        const regex_pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regex_pattern.test(email);
+    }
+
+    function checkPassword(password) {
+        if (isEmpty(password)) {
+            return false;
+        }
+
+        if (hasSpacesBeforeOrAfter(password)) {
+            return false;
+        }
+
+        if (hasSpaces(password)) {
+            return false;
+        }
+
+        return !(password.length < 6 || password.length > 10);
+    }
+
+    function checkConfirmPassword(password, confirmPassword) {
+        return password === confirmPassword;
+    }
+
+    function checkDateOfBirth(dateOfBirth) {
+        let ageDifMs = Date.now() - new Date(dateOfBirth);
+        let ageDate = new Date(ageDifMs);
+        return (Math.abs(ageDate.getUTCFullYear() - 1970)) >= 14;
+    }
+
+    function isEmpty(text) {
+        return text.length === 0 || isSpaces(text);
+    }
+
+    function hasSpaces(text) {
+        for (let i = 0; i < text.length; i++) {
+            if ((text[i]) === ' ') {
+                return true;
+            }
+        }
+        return false;
+    }
+    function isSpaces(text) {
+        return text.trim().length === 0;
+    }
+    function hasSpacesBeforeOrAfter(text) {
+        return text.length > text.trim().length;
+    }
+</script>
 </body>
 </html>

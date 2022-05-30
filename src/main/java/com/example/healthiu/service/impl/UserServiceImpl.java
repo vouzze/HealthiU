@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(UserData user) {
-        registerUserTemplate(user, Role.USER.getRole());
+        registerUserTemplate(user, Role.USER.toString());
     }
 
     @Override
@@ -39,30 +39,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInfo(UserData userData) {
+    public int checkChangesCount(UserData userData) {
         User user = userRepository.findUserByLogin(userData.getLogin());
         int changeCount = 0;
-        if (!user.getName().equals(userData.getName())){
+        if (!user.getName().equals(userData.getName())) {
             changeCount++;
-            user.setName(userData.getName());
         }
         if (!user.getEmail().equals(userData.getEmail())) {
             changeCount++;
-            user.setEmail(userData.getEmail());
         }
-        if (!user.getPassword().equals(userData.getPassword())) {
+        if (!user.getPassword().equals(userData.getPassword()) && userData.getPassword().length() > 0) {
             changeCount++;
-            user.setPassword(userData.getPassword());
         }
         if (!user.getDateOfBirth().equals(userData.getDateOfBirth())) {
             changeCount++;
+        }
+        return changeCount;
+    }
+
+    @Override
+    public void updateUserInfo(UserData userData) {
+        User user = userRepository.findUserByLogin(userData.getLogin());
+        if (!user.getName().equals(userData.getName())) {
+            user.setName(userData.getName());
+        }
+        if (!user.getEmail().equals(userData.getEmail())) {
+            user.setEmail(userData.getEmail());
+        }
+        if (!user.getPassword().equals(userData.getPassword()) && userData.getPassword().length() > 0) {
+            user.setPassword(userData.getPassword());
+        }
+        if (!user.getDateOfBirth().equals(userData.getDateOfBirth())) {
             user.setDateOfBirth(userData.getDateOfBirth());
         }
-        if (changeCount > 0) {
-            userRepository.save(user);
-        }
-        System.out.println(user.getEmail());
+        userRepository.save(user);
     }
+
     @Override
     public boolean checkIfUserExist(String login) {
         return userRepository.findById(login).isPresent();
@@ -75,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void loginNewUser(UserData userData, HttpServletRequest req) {
-        loginUserTemplate(userData, req, Role.USER.getRole());
+        loginUserTemplate(userData, req, Role.USER.toString());
     }
 
     @Override
@@ -92,8 +104,6 @@ public class UserServiceImpl implements UserService {
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
-
-
 
 
     //TEMPORARY TEMPLATES

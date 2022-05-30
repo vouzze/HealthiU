@@ -1,36 +1,22 @@
 package com.example.healthiu.entity;
 
-import com.example.healthiu.security.FieldMatch;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDate;
-@FieldMatch(first = "password", second = "confirm_password", message = "The password fields must match")
+
 public class UserData implements Serializable {
 
-    @NotBlank(message = "Login can't be blank")
-    @Size(min = 3, max = 10, message = "Login can be of length from 3 to 10")
     private String login;
 
-    @NotBlank(message = "Name can't be blank")
-    @Size(min = 2, max = 20, message = "Name can be of length from 2 to 20")
     private String name;
 
-    @NotBlank(message = "Email cant be blank")
-    @Email(message = "Invalid email")
     private String email;
 
-    @NotBlank(message = "Password can't be blank")
-    @Size(min = 6, max = 10, message = "Password can be of length from 6 to 10")
     private String password;
 
     private String confirmPassword;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull(message = "Date can't be null")
-    @Past(message = "Invalid date")
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
 
     public String getLogin() {
         return login;
@@ -72,11 +58,11 @@ public class UserData implements Serializable {
         this.confirmPassword = confirmPassword;
     }
 
-    public LocalDate getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -88,7 +74,7 @@ public class UserData implements Serializable {
         this.password = password;
     }
 
-    public UserData(String login, String name, String email, String password, String confirmPassword, LocalDate dateOfBirth) {
+    public UserData(String login, String name, String email, String password, String confirmPassword, Date dateOfBirth) {
         this.login = login;
         this.name = name;
         this.email = email;

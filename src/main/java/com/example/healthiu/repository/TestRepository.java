@@ -8,4 +8,5 @@ import java.util.Optional;
 
 @Repository("testRepository")
 public interface TestRepository extends JpaRepository<Test, String> {
+    Test findTestByUserLogin(String userLogin);
 }

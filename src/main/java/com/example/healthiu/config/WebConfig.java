@@ -16,7 +16,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addViewController("/chatroom/admin").setViewName("admin_chatroom");
         registry.addViewController("/chatroom/request-chatroom").setViewName("request_chatroom");
         registry.addViewController("/chatroom/user-**").setViewName("index");
-        registry.addViewController("/hello").setViewName("hello");
+        registry.addViewController("/profile").setViewName("profile");
+        registry.addViewController("/profile/test").setViewName("show_test");
+        registry.addViewController("/admin-register").setViewName("admin_register");
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/register").setViewName("register");
         registry.addViewController("/test").setViewName("test");

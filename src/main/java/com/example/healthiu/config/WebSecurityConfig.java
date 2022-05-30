@@ -33,16 +33,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/home", "/register",
-                        "/chat-messaging/**",
+                .antMatchers("/register").anonymous()
+                .antMatchers("/home",
+                        "/chat-messaging/**", "/test", "/test/result",
                         "/css/**", "/js/**", "/webjars/**"
                 )
                 .permitAll()
-                .antMatchers("/chatroom/admin", "/chatroom/admin/add-chatroom/**").hasAuthority(Role.ADMIN.getRole())
+                .antMatchers("/chatroom/admin", "/chatroom/admin/add-chatroom/**", "/admin-register")
+                .hasAuthority(Role.ADMIN.toString())
                 .antMatchers("/chatroom/request-chatroom-doctor", "/chatroom/unrequest-chatroom-doctor")
-                .hasAuthority(Role.DOCTOR.getRole())
+                .hasAuthority(Role.DOCTOR.toString())
                 .antMatchers("/chatroom/request-chatroom", "/chatroom/request-chatroom/requested")
-                .hasAuthority(Role.USER.getRole())
+                .hasAuthority(Role.USER.toString())
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

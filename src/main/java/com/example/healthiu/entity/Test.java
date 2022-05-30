@@ -1,5 +1,6 @@
 package com.example.healthiu.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Data
 @Table(name = "test")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Test {
     @Id
     private String userLogin;
@@ -26,10 +28,9 @@ public class Test {
     private double weight;
 
     @Column
-    private double waistSize;
-
-    @Column
     private double chestSize;
+    @Column
+    private double waistSize;
 
     @Column
     private double hipSize;
@@ -42,35 +43,4 @@ public class Test {
 
     @Column
     private double bmi;
-
-    public Test(String userLogin, String gender, int age, double height,
-                double weight, double waistSize, double chestSize,
-                double hipSize, String bloodType) {
-        this.userLogin = userLogin;
-        this.gender = gender;
-        this.age = age;
-        this.height = height;
-        this.weight = weight;
-        this.waistSize = waistSize;
-        this.chestSize = chestSize;
-        this.hipSize = hipSize;
-        this.bloodType = bloodType;
-    }
-
-    public Test(String userLogin, String gender, int age, double height,
-                double weight, double waistSize, double chestSize,
-                double hipSize, String bloodType, String testResult,
-                double bmi) {
-        this.userLogin = userLogin;
-        this.gender = gender;
-        this.age = age;
-        this.height = height;
-        this.weight = weight;
-        this.waistSize = waistSize;
-        this.chestSize = chestSize;
-        this.hipSize = hipSize;
-        this.bloodType = bloodType;
-        this.testResult = testResult;
-        this.bmi = bmi;
-    }
 }

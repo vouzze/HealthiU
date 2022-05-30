@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.time.LocalDate;
 
 @Entity
@@ -22,7 +23,7 @@ public class User {
     private String password;
 
     @Column
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
 
     @Column
     private String role;
@@ -32,7 +33,7 @@ public class User {
         this.password = password;
     }
 
-    public User(String login, String name, String email, String password, LocalDate dateOfBirth, String role) {
+    public User(String login, String name, String email, String password, Date dateOfBirth, String role) {
         this.login = login;
         this.name = name;
         this.email = email;
