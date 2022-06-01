@@ -10,8 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/home").setViewName("home");
-        registry.addViewController("/").setViewName("home");
+        registry.addViewController("/").setViewName("test");
         registry.addViewController("/chatroom").setViewName("chatroom");
         registry.addViewController("/chatroom/admin").setViewName("admin_chatroom");
         registry.addViewController("/chatroom/request-chatroom").setViewName("request_chatroom");
@@ -32,5 +31,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("/resources/");
 
     }
+
 
 }

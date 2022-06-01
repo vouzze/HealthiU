@@ -1,14 +1,14 @@
 package com.example.healthiu.entity;
 
 public enum TestResult {
-    UNDERWEIGHT("You are underweight. It is recommended to gain weight."),
-    NORMAL("Your weight is normal. You are fine just maintaining your weight."),
-    OVERWEIGHT("You are overweight. It is recommended to lose weight."),
-    OBESE("You are obese. It is strongly recommended to lose weight. Please, take care of your health."),
-    EXTREMELY_OBESE("You are extremely obese. Please, consult your doctor and seek help. "),
-    MORBIDLY_OBESE("You are morbidly obese. You have a great death possibility. It is important to use medical " +
-            "help in your state."),
-
+    UNDERWEIGHT("У Вас недостатня вага. Рекомендується її набрати."),
+    NORMAL("Ваша вага в межах норми. Ви можете просто її підтримувати."),
+    OVERWEIGHT("У Вас надлишкова вага. Рекомендується її скинути."),
+    OBESE("У Вас ожиріння 1-го ступеню. Строго рекомендується скинути вагу. Будь ласка, піклуйтесь про своє здоров'я."),
+    EXTREMELY_OBESE("У Вас ожиріння 2-го ступеню. Будь ласка, проконсультуйтеся зі своїм лікарем і якомога швидше " +
+            "почніть лікування."),
+    MORBIDLY_OBESE("У Вас ожиріння 3-го ступеню. Це смертельно небезпечно. Зараз для Вас важливо якнайшвидше зв'язатися " +
+            "з лікарем, щоб запобігти серйозним наслідкам."),
 
     RATION_O_STOP_GAIN("Пшениця (клейковина), Кукурудза, Звичайна овочева квасоля, Боби темні, Сочевиця, " +
             "Кочанна капуста, Брюссельська капуста, Цвітна капуста, Молоде листя гірчиці"),
@@ -34,11 +34,11 @@ public enum TestResult {
     RATION_AB_GAIN("Кукурудза, Гречка, Пшениця, Молочні продукти."),
 
 
-    CALORIES_TO_MAINTAIN("For maintaining your current weight you need this amount of calories per day: "),
-    CALORIES_TO_LOSE_05("For losing 0.5 kg per week you need this amount of calories per day: "),
-    CALORIES_TO_LOSE_1("For losing 1 kg per week you need this amount of calories per day: "),
-    CALORIES_TO_GAIN_05("For gaining 0.5 kg per week you need this amount of calories per day: "),
-    CALORIES_TO_GAIN_1("For gaining 1 kg per week you need this amount of calories per day: ")
+    CALORIES_TO_MAINTAIN("Для підтримання ваги без змін Вам потрібно стільки калорій в день: "),
+    CALORIES_TO_LOSE_05("Для скидання 0.5 кг за тиждень Вам потрібно стільки калорій в день: "),
+    CALORIES_TO_LOSE_1("Для скидання 1 кг за тиждень Вам потрібно стільки калорій в день: "),
+    CALORIES_TO_GAIN_05("Для набирання 0.5 кг за тиждень Вам потрібно стільки калорій в день: "),
+    CALORIES_TO_GAIN_1("Для набирання 1 кг за тиждень Вам потрібно стільки калорій в день: ")
     ;
     private final String testResult;
 

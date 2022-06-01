@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 @Controller
-public class AccountController {
+public class ProfileController {
     @Autowired
     private UserService userService;
 
@@ -29,15 +29,15 @@ public class AccountController {
         if (userService.checkIfEmailExist(userData.getEmail()) &&
                 !Objects.equals(userService.findUserByEmail(userData.getEmail()).getLogin(), userData.getLogin())) {
             model.addAttribute("userData", userData);
-            model.addAttribute("emailExists", "User with this email already exists.");
+            model.addAttribute("emailExists", "Користувач з цією поштою вже існує.");
             return "profile";
         }
         if (userService.checkChangesCount(userData) == 0) {
-            model.addAttribute("successfulEdit", "No changes were made!");
+            model.addAttribute("successfulEdit", "Ніяких змін не було зроблено!");
             return "profile";
         }
         userService.updateUserInfo(userData);
-        model.addAttribute("successfulEdit", "Profile is edited successfully!");
+        model.addAttribute("successfulEdit", "Профіль успішно змінений!");
         return "profile";
     }
 
@@ -52,5 +52,6 @@ public class AccountController {
         model.addAttribute("dateOfBirth", user.getDateOfBirth());
         model.addAttribute("role", user.getRole());
         model.addAttribute("userExists", null);
+        model.addAttribute("successfulEdit", null);
     }
 }

@@ -27,10 +27,10 @@ public class RegisterController {
 
     @PostMapping("/register")
     public String userRegistration(@Valid UserData userData, HttpServletRequest req, Model model) {
-        model.addAttribute("userExists", null);
+        model.addAttribute("userExists", " ");
         if (userService.checkIfUserExist(userData.getLogin()) || userService.checkIfEmailExist(userData.getEmail())) {
             model.addAttribute("userData", userData);
-            model.addAttribute("userExists", "User with this login or email already exists.");
+            model.addAttribute("userExists", "Користувач з цим логіном чи поштою вже існує.");
             return "register";
         }
         userService.register(userData);
@@ -40,7 +40,7 @@ public class RegisterController {
 
     @GetMapping("/admin-register")
     public String adminRegister(Model model) {
-        model.addAttribute("userExists", null);
+        model.addAttribute("userExists", " ");
         model.addAttribute("successfulRegistration", null);
         model.addAttribute("userData", new UserData());
         model.addAttribute("allRoles", Role.values());
@@ -52,13 +52,14 @@ public class RegisterController {
                                     @Valid UserData userData, Model model) {
         if (userService.checkIfUserExist(userData.getLogin()) || userService.checkIfEmailExist(userData.getEmail())) {
             model.addAttribute("userData", userData);
-            model.addAttribute("userExists", "User with this login or email already exists.");
+            model.addAttribute("allRoles", Role.values());
+            model.addAttribute("userExists", "Користувач з цим логіном чи поштою вже існує.");
             return "admin_register";
         }
         userService.register(userData, role);
         model.addAttribute("userData", userData);
         model.addAttribute("allRoles", Role.values());
-        model.addAttribute("successfulRegistration", "New user is successfully registered.");
+        model.addAttribute("successfulRegistration", "Користувач успішно зареєстрований.");
         return "admin_register";
     }
 }

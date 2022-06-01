@@ -21,15 +21,14 @@ public class TestController {
     @Autowired
     private TestService testService;
 
+    @GetMapping("/")
+    public String getTestHome(Model model) {
+        initTest(model);
+        return "test";
+    }
     @GetMapping("/test")
     public String getTest(Model model) {
-        TestData testData = new TestData();
-        testData.setGender(Gender.MALE.getGender());
-        model.addAttribute("testData", testData);
-        model.addAttribute("allGenders", Stream.of(Gender.values())
-                .map(Gender::getGender)
-                .collect(Collectors.toList()));
-        model.addAttribute("allBloodTypes", BloodType.values());
+        initTest(model);
         return "test";
     }
 
@@ -74,6 +73,16 @@ public class TestController {
         }
         addAttributesForTest(model, testService.findTestByLogin(req.getRemoteUser()));
         return "show_test";
+    }
+
+    private void initTest(Model model) {
+        TestData testData = new TestData();
+        testData.setGender(Gender.MALE.getGender());
+        model.addAttribute("testData", testData);
+        model.addAttribute("allGenders", Stream.of(Gender.values())
+                .map(Gender::getGender)
+                .collect(Collectors.toList()));
+        model.addAttribute("allBloodTypes", BloodType.values());
     }
 
     private void addAttributesForTest(Model model, Test test) {
