@@ -1,8 +1,8 @@
 package com.example.healthiu.entity;
 
 public enum Gender {
-    MALE("Male"),
-    FEMALE("Female")
+    MALE("Чоловік"),
+    FEMALE("Жінка")
     ;
 
     private final String gender;

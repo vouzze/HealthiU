@@ -38,7 +38,7 @@ public class ChatController {
     public String getChat(Model model, HttpServletRequest req, Authentication authentication) throws JsonProcessingException {
         String role = getRole(authentication);
         String senderLogin = req.getRemoteUser();
-        String recipientLogin = "doctor";
+        String recipientLogin = "Ніхто";
 
         if (role.equals(Role.ADMIN.toString())) {
             return "redirect:/chatroom/admin";

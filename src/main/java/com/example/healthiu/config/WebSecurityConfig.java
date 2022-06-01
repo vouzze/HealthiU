@@ -34,18 +34,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/register").anonymous()
-                .antMatchers("/home",
-                        "/chat-messaging/**", "/test", "/test/result",
-                        "/css/**", "/js/**", "/webjars/**"
+                .antMatchers("/chat-messaging/**", "/", "/test", "/test/result",
+                        "/css/**", "/js/**", "/img/**", "/webjars/**"
                 )
                 .permitAll()
+                .antMatchers("/profile", "/profile/test", "/chatroom").authenticated()
                 .antMatchers("/chatroom/admin", "/chatroom/admin/add-chatroom/**", "/admin-register")
                 .hasAuthority(Role.ADMIN.toString())
                 .antMatchers("/chatroom/request-chatroom-doctor", "/chatroom/unrequest-chatroom-doctor")
                 .hasAuthority(Role.DOCTOR.toString())
                 .antMatchers("/chatroom/request-chatroom", "/chatroom/request-chatroom/requested")
                 .hasAuthority(Role.USER.toString())
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")
