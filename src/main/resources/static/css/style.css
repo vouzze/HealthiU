@@ -217,3 +217,16 @@ body {
 .doctor_request_style {
     color: #a3d063;
 }
+
+.form-control {
+    border-color: #a3d063;
+    box-shadow: #a3d063;
+}
+
+body{
+    background-color: #f5886e;
+}
+
+.test {
+    background: #45829b;
+}
