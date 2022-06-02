@@ -60,8 +60,10 @@
         </div>
         <hr>
     </div>
+    <div class="chatroom-messaging">
+        <div class="chatroom-title">З Вами розмовляє: [[${recipientLogin}]]
+        </div>
     <div class="page-content">
-
         <div class="chatroom-doctor-content" th:if="${role == 'DOCTOR'}">
             <button class="btn doctor-content-btn" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
@@ -91,16 +93,12 @@
                 </div>
             </div>
         </div>
-
-        <div class="chatroom-messaging" th:classappend="${role == 'DOCTOR'} ? doctor-chatroom-messaging">
-            <div class="chatroom-title">З Вами розмовляє: [[${recipientLogin}]]
-            </div>
             <div class="chatroom-chat-window">
                 <ul class="messages open"></ul>
                 <div class="form-group">
                     <!-- <input id="message_input_value" class="form-control" type="text" placeholder="Type your message here..." /> -->
                     <div class="chatroom-textarea"><textarea id="message_input_value" class="form-control"
-                                                             placeholder="Type your message here..." autofocus></textarea>
+                                                             placeholder="Почніть набирати повідомлення..." autofocus></textarea>
                     </div>
                     <button id="send_message_button" class="btn btn-primary send-message" onclick="sendMessage()">
                         <div class="bi bi-send-fill"></div>

@@ -79,7 +79,7 @@
                     </li>
                     <span class="nav-item-divider"></span>
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin_register">Реєстрація</a>
+                        <a class="nav-link" href="/admin-register">Реєстрація</a>
                     </li>
                     <span class="nav-item-divider"></span>
                     <li class="nav-item">
@@ -103,8 +103,6 @@
     </div>
     <div class="page-content">
         <div class="container healthiu-form" th:if="${isTestInUser}">
-            <button id="go_to_user_test_doctor" sec:authorize="hasAuthority('DOCTOR')"
-                    class="btn btn-primary btn-lg doctor-button" onclick="window.location.href='/profile/tests'">Знайти тест</button>
             <div class="row">
                 <div class="col show-test-row">
                     <div class="row">
@@ -240,7 +238,7 @@
 
             <div class="two-btn-row">
                 <button id="back_to_edit_profile" class="btn btn-primary btn-lg" onclick="window.location.href='/profile'">Назад</button>
-                <button id="go_to_user_test" sec:authorize="hasAuthority('DOCTOR')" class="btn btn-primary btn-lg" onclick="window.location.href='profile/tests'">Знайти тест</button>
+                <button id="go_to_user_test" sec:authorize="hasAuthority('DOCTOR')" class="btn btn-primary btn-lg" onclick="window.location.href='/profile/tests'">Знайти тест</button>
             </div>
         </div>
         <div class="container healthiu-form" th:if="${!isTestInUser}">

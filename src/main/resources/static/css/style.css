@@ -395,7 +395,7 @@ input::-webkit-datetime-edit-year-field:focus {
 }
 
 .chatroom-messaging {
-    width: calc(100% - 2rem);
+    width: 100%;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -416,8 +416,8 @@ input::-webkit-datetime-edit-year-field:focus {
 .chatroom-chat-window {
     width: 100%;
     max-width: 1400px;
-    height: 450px;
-    margin: auto;
+    /*height: 450px;*/
+    /*margin: auto;*/
     border-radius: 0;
     background-color: #ccead05d;
     overflow: hidden;
@@ -777,6 +777,10 @@ badprod {
 
 .show-user-test-template .two-btn-row {
     margin: 1rem auto;
+}
+
+#find_user_test_input {
+    text-align: center;
 }
 
 
