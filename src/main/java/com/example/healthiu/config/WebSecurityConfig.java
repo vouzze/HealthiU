@@ -41,7 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/profile", "/profile/test", "/chatroom").authenticated()
                 .antMatchers("/chatroom/admin", "/chatroom/admin/add-chatroom/**", "/admin-register")
                 .hasAuthority(Role.ADMIN.toString())
-                .antMatchers("/chatroom/request-chatroom-doctor", "/chatroom/unrequest-chatroom-doctor")
+                .antMatchers("/chatroom/request-chatroom-doctor", "/chatroom/unrequest-chatroom-doctor",
+                        "/profile/tests", "/profile/tests/**")
                 .hasAuthority(Role.DOCTOR.toString())
                 .antMatchers("/chatroom/request-chatroom", "/chatroom/request-chatroom/requested")
                 .hasAuthority(Role.USER.toString())

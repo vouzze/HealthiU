@@ -63,7 +63,6 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message addNewMessage(String senderLogin, String recipientId, String content) {
         Message message = new Message(senderLogin, recipientId, content);
-        System.out.println(message);
         messageRepository.save(message);
         return message;
     }

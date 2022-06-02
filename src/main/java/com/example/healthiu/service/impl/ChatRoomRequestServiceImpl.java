@@ -52,7 +52,6 @@ public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
     @Override
     public UserChatRoomRequest addNewUserChatRoomRequest(String login) {
         UserChatRoomRequest userChatRoomRequest = new UserChatRoomRequest(login);
-        System.out.println(userChatRoomRequest);
         userChatRoomRequestRepository.save(userChatRoomRequest);
         return userChatRoomRequest;
     }
@@ -60,7 +59,6 @@ public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
     @Override
     public DoctorChatRoomRequest addNewDoctorChatRoomRequest(String login) {
         DoctorChatRoomRequest doctorChatRoomRequest = new DoctorChatRoomRequest(login);
-        System.out.println(doctorChatRoomRequest);
         doctorChatRoomRequestRepository.save(doctorChatRoomRequest);
         return doctorChatRoomRequest;
     }

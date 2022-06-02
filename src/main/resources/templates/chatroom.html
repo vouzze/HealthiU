@@ -18,9 +18,7 @@
 <body>
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/test">
-            Healthi<coloru>U</coloru>
-        </a>
+        <a class="navbar-brand" href="/test">Healthi<coloru>U</coloru></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -28,8 +26,7 @@
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
              aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Healthi<coloru>U</coloru>
-                </h5>
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Healthi<coloru>U</coloru></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
                     <i class="bi bi-x-lg"></i>
                 </button>
@@ -105,7 +102,7 @@
                     <div class="chatroom-textarea"><textarea id="message_input_value" class="form-control"
                                                              placeholder="Type your message here..." autofocus></textarea>
                     </div>
-                    <button class="btn btn-primary send-message" onclick="sendMessage()">
+                    <button id="send_message_button" class="btn btn-primary send-message" onclick="sendMessage()">
                         <div class="bi bi-send-fill"></div>
                     </button>
                 </div>
@@ -135,6 +132,7 @@
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
 </script>
 <script th:inline="javascript">
+    let messageInput = document.getElementById("message_input_value");
     var userLogin = "hamham";
     $('.chat_rooms').empty();
     let chatRoomList = [[${chatRoomList}]];
@@ -260,6 +258,13 @@
             }
         });
     }
+
+    messageInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById("send_message_button").click();
+        }
+    });
 </script>
 </body>
 

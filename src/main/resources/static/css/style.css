@@ -228,7 +228,7 @@ input::-webkit-datetime-edit-year-field:focus {
     color: #f5886e;
     font-size: 16px;
     width: fit-content;
-    margin: 10px 0 auto;
+    margin: 10px auto;
     border-top: solid 2px rgba(250, 128, 114, 0.299);
     white-space: pre-wrap;
 }
@@ -629,17 +629,17 @@ input::-webkit-datetime-edit-year-field:focus {
 
 .user_login_input_wrapper {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-evenly;
     padding: 1rem 0.2rem;
 }
 
 .user_login_input_wrapper .form-control {
-    margin: auto 1rem;
+    margin: 1rem 1rem;
 }
 
 .admin-chatroom-add-chatroom {
-    margin: 0.1rem 0.2rem;
+    margin: 0.1rem 0.2rem 1rem 0.2rem;
 }
 
 .message_template {
@@ -770,7 +770,14 @@ badprod {
     color: #f5886e;
 }
 
+.doctor-button {
+    width: 100%;
+    margin: 1rem auto;
+}
 
+.show-user-test-template .two-btn-row {
+    margin: 1rem auto;
+}
 
 
 
@@ -1048,6 +1055,10 @@ badprod {
         width: 100%;
     }
 
+    .admin-chatroom-add-chatroom {
+        margin: 0.1rem 0.2rem;
+    }
+
     .test-template .page-content{
         padding-bottom: 0;
     }
@@ -1058,5 +1069,10 @@ badprod {
 
     .page-not-found-template {
         justify-content: center;
+    }
+
+    .user_login_input_wrapper {
+        flex-direction: row;
+        margin: 0;
     }
 }

@@ -143,14 +143,12 @@ public class ChatController {
     public String getChatRoomAdmin(Model model) {
         model.addAttribute("userRequestList", chatRoomRequestService.findAllUserLogins());
         model.addAttribute("doctorRequestList", chatRoomRequestService.findAllDoctorLogins());
-        System.out.println(model);
         return "admin_chatroom";
     }
 
     @GetMapping("/chatroom/admin/add-chatroom/{userLogin}/{doctorLogin}")
     public String addChatRoom(@PathVariable String userLogin, @PathVariable String doctorLogin,
                                Model model) throws Exception {
-        boolean isChatRoomInvalid = false;
         if (chatRoomRequestService.findAllUserLogins().contains(userLogin)
                 && chatRoomRequestService.findAllDoctorLogins().contains(doctorLogin)) {
             chatRoomService.addNewChatRoom(userLogin, doctorLogin);
@@ -158,7 +156,6 @@ public class ChatController {
         } else {
             throw new Exception("ChatRoom is invalid");
         }
-        System.out.println(model.toString());
         return "admin_chatroom";
     }
 

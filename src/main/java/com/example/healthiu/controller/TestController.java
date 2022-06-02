@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -75,6 +76,12 @@ public class TestController {
         return "show_test";
     }
 
+    @GetMapping("/profile/tests")
+    public String showUserTest(Model model) {
+        model.addAttribute("isTestExists", false);
+        return "show_user_test";
+    }
+
     private void initTest(Model model) {
         TestData testData = new TestData();
         testData.setGender(Gender.MALE.getGender());
@@ -85,7 +92,7 @@ public class TestController {
         model.addAttribute("allBloodTypes", BloodType.values());
     }
 
-    private void addAttributesForTest(Model model, Test test) {
+    public void addAttributesForTest(Model model, Test test) {
         model.addAttribute("gender", test.getGender());
         model.addAttribute("age", test.getAge());
         model.addAttribute("height", test.getHeight());
